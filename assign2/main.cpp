@@ -7,14 +7,16 @@
  *
  */
 
-#include <fstream>
-#include <iostream>
-#include <queue>
-#include <set>
-#include <string>
-#include <unordered_set>
+ #include <iostream>
+ #include <fstream>
+ #include <set>
+ #include <queue>
+ #include <string>
+ #include <sstream>
+ #include <cstdlib>
+ #include <ctime>
 
-std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
+//std::string kYourName = "Jefferson_Valencia"; // Don't forget to change this!
 
 /**
  * Takes in a file name and returns a set containing all of the applicant names as a set.
@@ -27,34 +29,104 @@ std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
  * below it) to use a `std::unordered_set` instead. If you do so, make sure
  * to also change the corresponding functions in `utils.h`.
  */
-std::set<std::string> get_applicants(std::string filename) {
-  // STUDENT TODO: Implement this function.
+// Function to read names from file into a set (ordered)
+std::set<std::string> get_applicants(const std::string& filename) {
+  std::set<std::string> applicants;
+  std::ifstream file(filename);
+  std::string name;
+
+  if (!file) {
+      std::cerr << "Error opening file: " << filename << std::endl;
+      return applicants;
+  }
+
+  while (std::getline(file, name)) {
+      applicants.insert(name);
+  }
+
+  file.close();
+  return applicants;
 }
 
-/**
- * Takes in a set of student names by reference and returns a queue of names
- * that match the given student name.
- *
- * @param name      The returned queue of names should have the same initials as this name.
- * @param students  The set of student names.
- * @return          A queue containing pointers to each matching name.
- */
-std::queue<const std::string*> find_matches(std::string name, std::set<std::string>& students) {
-  // STUDENT TODO: Implement this function.
+// Helper function to extract initials from a full name
+std::string get_initials(const std::string& name) {
+  std::stringstream ss(name);
+  std::string word, initials;
+
+  while (ss >> word) { // Read each word (first name, last name, etc.)
+      initials += word[0]; // Take the first letter
+  }
+
+  return initials;
 }
 
-/**
- * Takes in a queue of pointers to possible matches and determines the one true match!
- *
- * You can implement this function however you'd like, but try to do something a bit
- * more complicated than a simple `pop()`.
- *
- * @param matches The queue of possible matches.
- * @return        Your magical one true love.
- *                Will return "NO MATCHES FOUND." if `matches` is empty.
- */
-std::string get_match(std::queue<const std::string*>& matches) {
-  // STUDENT TODO: Implement this function.
+// Function to find matches based on initials
+std::queue<std::string*> find_matches(const std::set<std::string>& students, const std::string& name) {
+  std::queue<std::string*> matches;
+  std::string target_initials = get_initials(name);
+
+  for (const std::string& student : students) {
+      if (get_initials(student) == target_initials) {
+          matches.push(const_cast<std::string*>(&student)); // Store pointer to matched name
+      }
+  }
+
+  return matches;
+}
+
+// Function to get the "one true match" from the queue
+std::string get_match(std::queue<std::string*>& matches) {
+  if (matches.empty()) {
+      return "NO MATCHES FOUND. Better luck next year 😢";
+  }
+
+  // Seed random number generator
+  std::srand(std::time(0));
+
+  int match_count = matches.size();
+  int random_index = std::rand() % match_count; // Pick a random index
+
+  std::string* selected_match = nullptr;
+  for (int i = 0; i <= random_index; ++i) {
+      selected_match = matches.front();
+      matches.pop();
+      if (i < random_index) {
+          matches.push(selected_match); // Re-add non-selected names back to queue
+      }
+  }
+
+  return *selected_match;
+}
+
+int main() {
+  std::string filename = "applicants.txt";
+  std::set<std::string> applicants = get_applicants(filename);
+
+  std::cout << "Applicants list:\n";
+  for (const auto& name : applicants) {
+      std::cout << name << std::endl;
+  }
+
+  std::string search_name;
+  std::cout << "\nEnter a name to find matches by initials: ";
+  std::getline(std::cin, search_name);
+
+  std::queue<std::string*> matches = find_matches(applicants, search_name);
+
+  std::cout << "\nMatching applicants with same initials:\n";
+  std::queue<std::string*> temp_matches = matches;
+  if (temp_matches.empty()) {
+      std::cout << "NO MATCHES FOUND.\n";
+  } else {
+      while (!temp_matches.empty()) {
+          std::cout << *temp_matches.front() << std::endl;
+          temp_matches.pop();
+      }
+  }
+
+  std::cout << "\nYour one true match is: " << get_match(matches) << std::endl;
+
+  return 0;
 }
 
 /* #### Please don't remove this line! #### */
