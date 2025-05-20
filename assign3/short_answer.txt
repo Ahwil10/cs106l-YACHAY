@@ -1,11 +1,11 @@
-Before submitting this file, make sure that there are no more TODO
-placeholders remaining in the file (and remove this comment too).
 
 Make a Class
 ------------
 
 Q1. What’s const-correctness and why is it important?
-A1. TODO
+A1. Const-correctness is a programming practice in C++ that ensures that variables, function parameters, and member functions that should not be modified are properly declared as const. It helps prevent unintended modifications and improves code reliability.
 
 Q2. Is your class const-correct? How do you know?
-A2. TODO
+A2. ✅ Manual Review – Check each function and variable declaration.
+✅ Compiler Errors – Try using your class with const objects and see if errors occur.
+✅ Static Analysis Tools – Tools like Clang-Tidy or CppCheck can identify missing const usage.

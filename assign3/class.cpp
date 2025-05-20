@@ -1,43 +1,56 @@
-// class.cpp
 #include "class.h"
 #include <iostream>
 
-Car::Car() : brand("Unknown"), speed(0) {}
+// Default constructor
+BankAccount::BankAccount() : accountHolder("Unknown"), balance(0.0) {}
 
-Car::Car(std::string carBrand, int carSpeed) : brand(carBrand), speed(carSpeed) {
-    validateSpeed();
+// Custom constructor
+BankAccount::BankAccount(const std::string& name, double initialBalance) 
+    : accountHolder(name), balance(initialBalance) {
+    validateBalance();
 }
 
-std::string Car::getBrand() const {
-    return brand;
+// Private function to ensure balance is non-negative
+void BankAccount::validateBalance() {
+    if (balance < 0) {
+        std::cout << "Balance cannot be negative. Setting to 0." << std::endl;
+        balance = 0;
+    }
 }
 
-void Car::setBrand(std::string carBrand) {
-    brand = carBrand;
+// Getter functions (const-correct)
+std::string BankAccount::getAccountHolder() const {
+    return accountHolder;
 }
 
-int Car::getSpeed() const {
-    return speed;
+double BankAccount::getBalance() const {
+    return balance;
 }
 
-void Car::setSpeed(int carSpeed) {
-    speed = carSpeed;
-    validateSpeed();
+// Setter functions
+void BankAccount::setAccountHolder(const std::string& name) {
+    accountHolder = name;
 }
 
-void Car::accelerate(int amount) {
-    speed += amount;
-    validateSpeed();
+void BankAccount::setBalance(double amount) {
+    balance = amount;
+    validateBalance();
 }
 
-void Car::brake(int amount) {
-    speed -= amount;
-    validateSpeed();
+// Deposit function
+void BankAccount::deposit(double amount) {
+    if (amount > 0) {
+        balance += amount;
+    } else {
+        std::cout << "Deposit amount must be positive." << std::endl;
+    }
 }
 
-void Car::validateSpeed() {
-    if (speed < 0) {
-        speed = 0;
-        std::cout << "Speed cannot be negative. Setting to 0." << std::endl;
+// Withdraw function
+void BankAccount::withdraw(double amount) {
+    if (amount > 0 && amount <= balance) {
+        balance -= amount;
+    } else {
+        std::cout << "Invalid withdrawal amount." << std::endl;
     }
 }

@@ -3,23 +3,31 @@
 
 #include <string>
 
-class Car {
+class BankAccount {
 private:
-    std::string brand;
-    int speed;
-    void validateSpeed(); // Private function to ensure speed remains non-negative
+    std::string accountHolder;
+    double balance;
+
+    void validateBalance();  // Private helper function
 
 public:
-    Car(); // Default constructor
-    Car(std::string carBrand, int carSpeed); // Custom constructor
-    
-    std::string getBrand() const; // Getter for brand
-    void setBrand(std::string carBrand); // Setter for brand
-    
-    int getSpeed() const; // Getter for speed
-    void setSpeed(int carSpeed); // Setter for speed
-    
-    void accelerate(int amount); // Public method to increase speed
-    void brake(int amount); // Public method to decrease speed
+    // Default constructor
+    BankAccount();
+
+    // Custom constructor
+    BankAccount(const std::string& name, double initialBalance);
+
+    // Getter function (const-correct)
+    std::string getAccountHolder() const;
+    double getBalance() const;
+
+    // Setter function
+    void setAccountHolder(const std::string& name);
+    void setBalance(double amount);
+
+    // Public methods
+    void deposit(double amount);
+    void withdraw(double amount);
 };
-#endif
+
+#endif // CLASS_H
